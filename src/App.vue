@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <!-- 保留离开时的页面状态 -->
+    <!-- exclude='Detail'不能让detail组件保证活跃，否则当从主页点击其它商品信息时无法刷新 -->
+    <keep-alive exclude='Detail'>
+      <router-view></router-view>
+    </keep-alive>
     <MainTabBar></MainTabBar>
   </div>
 </template>

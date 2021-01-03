@@ -2,7 +2,7 @@
   <Swiper>
     <SwiperItem v-for="(item, index) in banners" :key="index">
       <a :href="item.link">
-        <img :src="item.image" alt="">
+        <img :src="item.image" alt="" @load='imgLoad'>
       </a>
     </SwiperItem>
   </Swiper>
@@ -13,6 +13,11 @@
 
   export default {
     name: "homeSwiper",
+    data() {
+      return {
+        isTrue: false,//因为有四张轮播图，但只需要知道一张加载完成就可以
+      }
+    },
     props: {
       banners: {
         type: Array,
@@ -24,7 +29,16 @@
     components: {
       Swiper,
       SwiperItem
-    }
+    },
+    methods: {
+      imgLoad() {
+        if (!this.isTrue) {
+          // console.log("++++");
+          this.$emit("swiperImg");
+          this.isTrue = true
+        }
+      }
+    },
   }
 </script>
 
