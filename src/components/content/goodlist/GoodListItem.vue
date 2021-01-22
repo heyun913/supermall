@@ -1,6 +1,8 @@
 <template>
   <div class="Items" @click='itemClick'>
-    <img :src="goodItem.show.img" alt="" @load='imgLoad'>
+    <!-- <img :src="showImg" alt="" @load='imgLoad'> -->
+    <!-- 懒加载模式 -->
+    <img v-lazy="showImg" alt="" @load='imgLoad'>
     <p>{{goodItem.title}}</p>
     <span class="price">{{goodItem.price}}</span>
     <span class="collect">收藏：{{goodItem.cfav}}</span>
@@ -16,6 +18,11 @@
         default() {
           return {}
         }
+      }
+    },
+    computed: {
+      showImg() {
+        return this.goodItem.image || this.goodItem.show.img;
       }
     },
     methods: {

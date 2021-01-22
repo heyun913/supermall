@@ -38,7 +38,7 @@
         this.$emit('scroll', position);
       })
       // 3. 监听下拉加载更多
-      this.scroll.on('pullingUp', () => {
+      this.pullUpLoad && this.scroll.on('pullingUp', () => {
         // console.log("上拉加载更多！！！");
 
         this.$emit('pullingUp')

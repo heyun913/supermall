@@ -13,28 +13,46 @@ Vue.use(VueRouter)
 const routes = [
   {
     path:'',
-    redirect:"/home"
+    redirect:"/home",
+    meta:{
+      show:true
+    }
   },
   {
     path:'/home',
-    component:Home
+    component:Home,
+    meta:{
+      show:true
+    }
   },
   {
     path:'/category',
-    component:CateGory
+    component:CateGory,
+    meta:{
+      show:true
+    }
   },
   {
     path:'/cart',
-    component:Cart
+    component:Cart,
+    meta:{
+      show:true
+    }
   },
   {
     path:'/profile',
-    component:ProFile
+    component:ProFile,
+    meta:{
+      show:true
+    }
   },
   {
     // 绑定参数
     path:'/detail/:iid',
-    component:Detail
+    component:Detail,
+    meta:{
+      show:false
+    }
   }
 ]
 

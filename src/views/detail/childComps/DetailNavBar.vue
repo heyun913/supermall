@@ -36,12 +36,16 @@
       // 标题点击高亮操作
       itemClick(index) {
         this.currentIndex = index
+
+        //传出到detail
+        this.$emit('itemClick', index);
       },
       // 回到上一级
       backClick() {
         this.$router.back()
       }
     },
+
   }
 </script>
 

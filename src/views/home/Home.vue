@@ -11,7 +11,7 @@
       @pullingUp='loadMore'>
       <home-swiper v-if="banners!=''" :banners='banners' @swiperImg='swiperImg'></home-swiper>
 
-      <recommend-View :recommends='recommends'></recommend-View>
+      <recommend-View v-if="recommends!=''" :recommends='recommends'></recommend-View>
 
       <feture-view></feture-view>
       <!-- @tabClick接收从子组件传入的数据 -->
@@ -46,7 +46,7 @@
   //导图外部js工具
   import { debounce } from 'common/util'
   import { getHomeMultidata, getHomeData } from 'networks/home'
-
+  import { itemImgListenerMixIn } from 'common/mixin'
 
   export default {
     name: "Home",
@@ -60,6 +60,7 @@
       scroll,
       BackTo
     },
+    mixins: [itemImgListenerMixIn],
     data() {
       return {
         banners: [],
@@ -79,7 +80,12 @@
         // 因为当一个页面上拉加载后，高度会增加，而其它两个页面的高度没有变化，那么从这两个页面到增加了高度的页面，就无法到达
         saveP: 0,
         saveN: 0,
-        saveS: 0
+        saveS: 0,
+        //保存离开home页面的位置
+        saveHome: 0,
+        //页面离开时不在总线上进行监听，防止详情页面监听图片完成时，对该页面造成刷新
+        // 因为home页面和detail页面会用到相同的变量和函数，这儿可以用mixin混入进行简化
+        // itemImgListener: null,
       }
     },
     computed: {
@@ -99,20 +105,22 @@
 
 
     },
+    activated() {
+      this.$refs.scroll.refresh();//从详情页进来后刷新一次，否则无法滚动
+      this.$refs.scroll.scrollTo(0, this.saveHome, 0);
+      // console.log('当前在hmoe页面');
+    },
+    deactivated() {
+      // 1.记录离开页面的位置
+      this.saveHome = this.$refs.scroll.scroll.y;
+
+      // 2. 摧毁监听图片加载完成
+      this.$bus.$off('itemImgLoad', this.itemImgListener);
+    },
     mounted() {
-      // 1.监听图片
-      const refresh = debounce(this.$refs.scroll.refresh, 100);
-
-      // 3. 监听图片加载完成（系统总线）,（监听的操作最好不要放在create中）
-      this.$bus.$on('itemImgLoad', () => {
-        // this.$refs.scroll.refresh();
-        refresh();
-      })
-
       // 2. 获取offsettop值,如果要获取一个组件中的元素值，需要用$el
       //这儿直接得到的值是不准确的，因为轮播的图片没有加载完成
       // console.log(this.$refs.tabControl.$el.offsetTop);
-
 
     },
     methods: {
@@ -165,6 +173,7 @@
             this.saveN = position.y;
             break;
         }
+
       },
       //调用回到顶部的方法
       backTop() {
@@ -227,6 +236,7 @@
     right: 0;
     top: 44px;
     bottom: 49px;
+
   }
 
   .BackTo {
